@@ -6,6 +6,7 @@ Created on Fri Mar 26 22:31:29 2021
 """
 from opcode import hasjabs
 import mne
+import pandas as pd
 
 #Just display errors and warnings
 mne.set_log_level("WARNING")
@@ -35,13 +36,16 @@ event_onset = data._annotations.onset
 time_values = data.times
 print(eeg.shape)
 print("-"*80)
-print(info)
+# print(info)
 print("-"*80)
 print(event_info)
+# l=event_info.tolist()
+# df_temp= pd.DataFrame(l)
+# df_temp.to_csv("S01_MI/event_info_S01_run1.csv")
 print("-"*80)
 print(event_onset)
 print("-"*80)
-print(time_values)
+# print(time_values)
 
 """
 Event description
