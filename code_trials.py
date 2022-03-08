@@ -93,8 +93,8 @@ model.add(Conv2D(64, (1, 1), activation='relu', padding='same', strides=(1,1)))
 model.add(Flatten())
 # add fully connected layer with 1024 neurons
 model.add(Dense(1024, activation='relu'))
-# add fully connected layer with 2 neurons
-model.add(Dense(2, activation='softmax'))
+# add fully connected layer with max(y) neurons
+model.add(Dense(max(y), activation='softmax'))
 # compile model
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 # model structure
