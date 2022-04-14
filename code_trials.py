@@ -77,10 +77,9 @@ for i in range(len(x)):
   final_x.append(image_4d)
 
 # make heatmap of final_x[0][0]
-# print(final_x[0][0])
-# print(final_x)
-plt.imshow(final_x[0][0])
-plt.show()
+final_x =np.array(final_x)
+# plt.imshow(final_x[0][0])
+# plt.show()
 
 # random suffle can be done here. 
 
@@ -92,6 +91,12 @@ validation_x=final_x[int(len(final_x)*0.7):int(len(final_x)*0.85)]
 validation_y=y[int(len(y)*0.7):int(len(y)*0.85)]
 test_x=final_x[int(len(final_x)*0.85):]
 test_y=y[int(len(y)*0.85):]
+
+# reshape
+train_x = train_x.reshape(train_x.shape[0],15,15,4)
+validation_x = validation_x.reshape(validation_x.shape[0],15,15,4)
+test_x = test_x.reshape(test_x.shape[0],15,15,4)
+print(train_x.shape)
 
 #  each having 11x11x4 matrix
 # 2D CNN model import
@@ -120,7 +125,7 @@ model.add(Flatten())
 # add fully connected layer with 1024 neurons
 model.add(Dense(1024, activation='relu'))
 # add fully connected layer with max(y) neurons
-model.add(Dense(max(y), activation='softmax'))
+model.add(Dense(max(y)+1, activation='softmax'))
 # compile model
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 # model structure
@@ -132,8 +137,8 @@ scores = model.evaluate(test_x, test_y, verbose=0)
 print("Accuracy: %.2f%%" % (scores[1]*100))
 # plot error and accuracy
 import matplotlib.pyplot as plt
-plt.plot(history.history['acc'])
-plt.plot(history.history['val_acc'])
+plt.plot(history.history['accuracy'])
+plt.plot(history.history['val_accuracy'])
 plt.title('model accuracy')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
