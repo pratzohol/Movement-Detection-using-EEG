@@ -1,5 +1,7 @@
 import mne
 import numpy as np
+from scipy import signal
+from matplotlib import pyplot as plt
 
 event_list = [1536, 1537, 1538, 1539, 1540, 1541, 1542]
 f_s = 512
@@ -34,32 +36,55 @@ print(len(x))
 print(len(x[0]))
 print(len(y))
 
-spectral_x=[]
+spectral_x=[[0 for j in range(len(x[0]))] for i in range(len(x))]
 
-# calculate power spectral density for each 61 channels
-def calculate_psd(data):
-  psd = np.zeros((61,1536))
-  for ch in range(61):
-    psd[ch,:] = np.abs(np.fft.rfft(data[ch,:]))**2
-  return psd
+def calc_psd(temp_psd, f_s):
+  f, Pxx_den = signal.periodogram(temp_psd, f_s)
+  temp_4 = []
+  temp_4.append(np.average(Pxx_den[0:3*4+1]))
+  temp_4.append(np.average(Pxx_den[3*4:3*8+1]))
+  temp_4.append(np.average(Pxx_den[3*8:3*12+1]))
+  temp_4.append(np.average(Pxx_den[3*12:3*30+1]))
+  # print(f[3*30])
+  return temp_4
 
-# perform psd calculation for each trial
 for i in range(len(x)):
-  spectral_x.append(calculate_psd(x[i]))
-
-final_x=[]
-
-for i in range(len(spectral_x)):
-  sample_rate=0.001953125
-  freq_axis = np.fft.rfftfreq(1536, d=sample_rate)
-  
+  for j in range(len(x[0])):
+    spectral_x[i][j] = calc_psd(x[i][j], f_s)
 
 # 61 electrode placement matrix
-l=[[]]
+final_x = []
+for i in range(len(x)):
+  image_4d=[]
+  for j in range(4):
+    temp_band=[[0,0,0,spectral_x[i][0][j],0,spectral_x[i][1][j],0,spectral_x[i][2][j],0,spectral_x[i][3][j],0,spectral_x[i][4][j],0,0,0],
+    [0,0,spectral_x[i][5][j],0,spectral_x[i][6][j],0,spectral_x[i][7][j],0,spectral_x[i][8][j],0,spectral_x[i][9][j],0,spectral_x[i][10][j],0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,spectral_x[i][11][j],0,spectral_x[i][12][j],0,spectral_x[i][13][j],0,spectral_x[i][14][j],0,spectral_x[i][15][j],0,spectral_x[i][16][j],0,spectral_x[i][17][j],0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [spectral_x[i][18][j],0,spectral_x[i][19][j],0,spectral_x[i][20][j],0,spectral_x[i][21][j],0,spectral_x[i][22][j],0,spectral_x[i][23][j],0,spectral_x[i][24][j],0,spectral_x[i][25][j]],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,spectral_x[i][26][j],0,spectral_x[i][27][j],0,spectral_x[i][28][j],0,spectral_x[i][29][j],0,spectral_x[i][30][j],0,spectral_x[i][31][j],0,spectral_x[i][32][j],0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [spectral_x[i][33][j],0,spectral_x[i][34][j],0,spectral_x[i][35][j],0,spectral_x[i][36][j],0,spectral_x[i][37][j],0,spectral_x[i][38][j],0,spectral_x[i][39][j],0,spectral_x[i][40][j]],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,spectral_x[i][41][j],0,spectral_x[i][42][j],0,spectral_x[i][43][j],0,spectral_x[i][44][j],0,spectral_x[i][45][j],0,spectral_x[i][46][j],0,spectral_x[i][47][j],0],
+    [0,0,spectral_x[i][48][j],0,spectral_x[i][49][j],0,spectral_x[i][50][j],0,spectral_x[i][51][j],0,spectral_x[i][52][j],0,spectral_x[i][53][j],0,0],
+    [0,0,0,spectral_x[i][54][j],0,spectral_x[i][55][j],0,spectral_x[i][56][j],0,spectral_x[i][57][j],0,spectral_x[i][58][j],0,0,0],
+    [0,0,0,0,0,0,spectral_x[i][59][j],0,spectral_x[i][60][j],0,0,0,0,0,0]
+    ]
+    image_4d.append(temp_band)
+  final_x.append(image_4d)
+
+# make heatmap of final_x[0][0]
+# print(final_x[0][0])
+# print(final_x)
+plt.imshow(final_x[0][0])
+plt.show()
 
 # random suffle can be done here. 
 
-final_x = [[[[0 for i in range(11)] for j in range(11)] for k in range(4)] for w in range(len(spectral_x))]
+# final_x = [[[[0 for i in range(11)] for j in range(11)] for k in range(4)] for w in range(len(spectral_x))]
 # randomly splitting the data into train, validation and test
 train_x=final_x[:int(len(final_x)*0.7)]
 train_y=y[:int(len(y)*0.7)]
@@ -74,15 +99,16 @@ import keras
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D
-from keras.utils import to_categorical
+# from keras.utils import to_categorical
+import tensorflow as tf
 # convert y to one hot encoding
-train_y = to_categorical(train_y)
-validation_y = to_categorical(validation_y)
-test_y = to_categorical(test_y)
+train_y = tf.keras.utils.to_categorical(train_y)
+validation_y = tf.keras.utils.to_categorical(validation_y)
+test_y = tf.keras.utils.to_categorical(test_y)
 # define model
 model = Sequential()
 # add 2D convolution such that output is of size (11,11,64)
-model.add(Conv2D(64, (3, 3), activation='relu', input_shape=(20,20,4), padding='same', strides=(1,1)))
+model.add(Conv2D(64, (3, 3), activation='relu', input_shape=(15,15,4), padding='same', strides=(1,1)))
 # add 2D convolution such that output is of size (11,11,128)
 model.add(Conv2D(128, (3, 3), activation='relu', padding='same', strides=(1,1)))
 # add 2D convolution such that output is of size (11,11,256)
