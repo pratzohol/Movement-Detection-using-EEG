@@ -13,13 +13,13 @@ sample_f = int(t_f*f_s)
 
 final_x = []
 final_y = []
-for i in range(1,11):
+for fff in range(1,11):
   x = []
   y = []
 
   #have to run code below this for all 10 runs for subject1
-  if i<10:
-    data = mne.io.read_raw_gdf('S01_MI/motorimagination_subject1_run'+str(i)+'.gdf')
+  if fff<10:
+    data = mne.io.read_raw_gdf('S01_MI/motorimagination_subject1_run'+str(fff)+'.gdf')
   else:
     data = mne.io.read_raw_gdf('S01_MI/motorimagination_subject1_run'+str(10)+'.gdf')
   eeg_data = data.get_data()
@@ -103,6 +103,18 @@ validation_x = validation_x.reshape(validation_x.shape[0],15,15,4)
 test_x = test_x.reshape(test_x.shape[0],15,15,4)
 print(train_x.shape)
 
+# normalize the data with scaler
+import sklearn.preprocessing as preprocessing
+scaler = preprocessing.StandardScaler()
+for i in range(len(train_x)):
+  for j in range(4):
+    train_x[i][:,:,j] = scaler.fit_transform(train_x[i][:,:,j])
+for i in range(len(validation_x)):
+  for j in range(4):
+    validation_x[i][:,:,j] = scaler.fit_transform(validation_x[i][:,:,j])
+for i in range(len(test_x)):
+  for j in range(4):
+    test_x[i][:,:,j] = scaler.fit_transform(test_x[i][:,:,j])
 #  each having 11x11x4 matrix
 # 2D CNN model import
 import keras
@@ -122,13 +134,15 @@ model.add(Conv2D(64, (3, 3), activation='relu', input_shape=(15,15,4), padding='
 # add 2D convolution such that output is of size (11,11,128)
 model.add(Conv2D(128, (3, 3), activation='relu', padding='same', strides=(1,1)))
 # add 2D convolution such that output is of size (11,11,256)
-model.add(Conv2D(256, (3, 3), activation='relu', padding='same', strides=(1,1)))
+# model.add(Conv2D(256, (3, 3), activation='relu', padding='same', strides=(1,1)))
 # add 2D convolution such that output is of size (11,11,64)
 model.add(Conv2D(64, (1, 1), activation='relu', padding='same', strides=(1,1)))
 # add flatten layer
 model.add(Flatten())
+# add fully connected layer with 4096 neurons
+# model.add(Dense(4096,activation='relu'))
 # add fully connected layer with 1024 neurons
-model.add(Dense(1024, activation='relu'))
+model.add(Dense(256, activation='relu'))
 # add fully connected layer with max(y) neurons
 model.add(Dense(max(y)+1, activation='softmax'))
 # compile model
@@ -136,7 +150,7 @@ model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accur
 # model structure
 print(model.summary())
 # fit model
-history = model.fit(train_x, train_y, validation_data=(validation_x, validation_y), epochs=10, batch_size=32)
+history = model.fit(train_x, train_y, validation_data=(validation_x, validation_y), epochs=30, batch_size=32)
 # evaluate model
 scores = model.evaluate(test_x, test_y, verbose=0)
 print("Accuracy: %.2f%%" % (scores[1]*100))
