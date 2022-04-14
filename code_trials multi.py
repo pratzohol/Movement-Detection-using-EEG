@@ -130,9 +130,9 @@ test_y = tf.keras.utils.to_categorical(test_y)
 # define model
 model = Sequential()
 # add 2D convolution such that output is of size (11,11,64)
-model.add(Conv2D(64, (3, 3), activation='relu', input_shape=(15,15,4), padding='same', strides=(1,1)))
+model.add(Conv2D(64, (4, 4), activation='relu', input_shape=(15,15,4), padding='same', strides=(1,1)))
 # add 2D convolution such that output is of size (11,11,128)
-model.add(Conv2D(128, (3, 3), activation='relu', padding='same', strides=(1,1)))
+model.add(Conv2D(128, (4, 4), activation='relu', padding='same', strides=(1,1)))
 # add 2D convolution such that output is of size (11,11,256)
 # model.add(Conv2D(256, (3, 3), activation='relu', padding='same', strides=(1,1)))
 # add 2D convolution such that output is of size (11,11,64)
@@ -143,6 +143,10 @@ model.add(Flatten())
 # model.add(Dense(4096,activation='relu'))
 # add fully connected layer with 1024 neurons
 model.add(Dense(256, activation='relu'))
+# add dropout layer
+model.add(Dropout(0.5))
+# add early stopping
+early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10)
 # add fully connected layer with max(y) neurons
 model.add(Dense(max(y)+1, activation='softmax'))
 # compile model
@@ -150,7 +154,7 @@ model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accur
 # model structure
 print(model.summary())
 # fit model
-history = model.fit(train_x, train_y, validation_data=(validation_x, validation_y), epochs=30, batch_size=32)
+history = model.fit(train_x, train_y, validation_data=(validation_x, validation_y), epochs=30, batch_size=32, callbacks=[early_stopping])
 # evaluate model
 scores = model.evaluate(test_x, test_y, verbose=0)
 print("Accuracy: %.2f%%" % (scores[1]*100))
