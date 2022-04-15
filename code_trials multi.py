@@ -115,7 +115,7 @@ for i in range(len(validation_x)):
 for i in range(len(test_x)):
   for j in range(4):
     test_x[i][:,:,j] = scaler.fit_transform(test_x[i][:,:,j])
-#  each having 11x11x4 matrix
+# each having 11x11x4 matrix
 # 2D CNN model import
 import keras
 from keras.models import Sequential
