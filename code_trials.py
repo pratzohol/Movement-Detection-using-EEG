@@ -98,6 +98,19 @@ validation_x = validation_x.reshape(validation_x.shape[0],15,15,4)
 test_x = test_x.reshape(test_x.shape[0],15,15,4)
 print(train_x.shape)
 
+# # normalize the data with scaler
+# import sklearn.preprocessing as preprocessing
+# scaler = preprocessing.StandardScaler()
+# for i in range(len(train_x)):
+#   for j in range(4):
+#     train_x[i][:,:,j] = scaler.fit_transform(train_x[i][:,:,j])
+# for i in range(len(validation_x)):
+#   for j in range(4):
+#     validation_x[i][:,:,j] = scaler.fit_transform(validation_x[i][:,:,j])
+# for i in range(len(test_x)):
+#   for j in range(4):
+#     test_x[i][:,:,j] = scaler.fit_transform(test_x[i][:,:,j])
+
 #  each having 11x11x4 matrix
 # 2D CNN model import
 import keras
