@@ -8,11 +8,12 @@ from opcode import hasjabs
 import mne
 import pandas as pd
 
-#Just display errors and warnings
+# Just display errors and warnings
 mne.set_log_level("WARNING")
 
-#Loading EEG data
-data = mne.io.read_raw_gdf("S01_MI/motorimagination_subject1_run1.gdf", preload=True) 
+# Loading EEG data
+data = mne.io.read_raw_gdf(
+    "S01_MI/motorimagination_subject1_run1.gdf", preload=True)
 # mne.viz.plot_raw(data, start=0, duration=10)
 # df=data.to_data_frame()
 # df.to_excel("S01_MI/motorimagination_subject1_run1.xlsx")
@@ -20,9 +21,9 @@ data = mne.io.read_raw_gdf("S01_MI/motorimagination_subject1_run1.gdf", preload=
 # print(df.info())
 # print(df.describe())
 # print(df.columns)
-all_channels=data.ch_names
+all_channels = data.ch_names
 print(all_channels)
-#select channels
+# select channels
 # eeg_data = data.pick_channels(all_channels[:62])
 # print(eeg_data.info())
 print("-"*80)
