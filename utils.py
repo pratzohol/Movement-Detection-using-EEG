@@ -1,13 +1,36 @@
 import numpy as np
 from scipy import signal
 
+
 def calc_psd(temp_psd, f_s):
     f, Pxx_den = signal.periodogram(temp_psd, f_s)
 
     temp_4 = []
-    temp_4.append(np.average(Pxx_den[0 : 3 * 4 + 1]))
-    temp_4.append(np.average(Pxx_den[3 * 4 : 3 * 8 + 1]))
-    temp_4.append(np.average(Pxx_den[3 * 8 : 3 * 12 + 1]))
-    temp_4.append(np.average(Pxx_den[3 * 12 : 3 * 30 + 1]))
+    temp_4.append(np.average(Pxx_den[0: 3 * 4 + 1]))
+    temp_4.append(np.average(Pxx_den[3 * 4: 3 * 8 + 1]))
+    temp_4.append(np.average(Pxx_den[3 * 8: 3 * 12 + 1]))
+    temp_4.append(np.average(Pxx_den[3 * 12: 3 * 30 + 1]))
 
     return temp_4
+
+
+def temp_band(X, i, j):
+    temp_band = [
+                [          0,           0,           0,  X[i][0][j],           0,  X[i][1][j],           0,  X[i][2][j],           0,  X[i][3][j],           0,  X[i][4][j],           0,           0,           0],
+                [          0,           0,  X[i][5][j],           0,  X[i][6][j],           0,  X[i][7][j],           0,  X[i][8][j],           0,  X[i][9][j],           0, X[i][10][j],           0,           0],
+                [          0,           0,           0,           0,           0,           0,           0,           0,           0,           0,           0,           0,           0,           0,           0],
+                [          0, X[i][11][j],           0, X[i][12][j],           0, X[i][13][j],           0, X[i][14][j],           0, X[i][15][j],           0, X[i][16][j],           0, X[i][17][j],           0],
+                [          0,           0,           0,           0,           0,           0,           0,           0,           0,           0,           0,           0,           0,           0,           0],
+                [X[i][18][j],           0, X[i][19][j],           0, X[i][20][j],           0, X[i][21][j],           0, X[i][22][j],           0, X[i][23][j],           0, X[i][24][j],           0, X[i][25][j]],
+                [          0,           0,           0,           0,           0,           0,           0,           0,           0,           0,           0,           0,           0,           0,           0],
+                [          0, X[i][26][j],           0, X[i][27][j],           0, X[i][28][j],           0, X[i][29][j],           0, X[i][30][j],           0, X[i][31][j],           0, X[i][32][j],           0],
+                [          0,           0,           0,           0,           0,           0,           0,           0,           0,           0,           0,           0,           0,           0,           0],
+                [X[i][33][j],           0, X[i][34][j],           0, X[i][35][j],           0, X[i][36][j],           0, X[i][37][j],           0, X[i][38][j],           0, X[i][39][j],           0, X[i][40][j]],
+                [          0,           0,           0,           0,           0,           0,           0,           0,           0,           0,           0,           0,           0,           0,           0],
+                [          0, X[i][41][j],           0, X[i][42][j],           0, X[i][43][j],           0, X[i][44][j],           0, X[i][45][j],           0, X[i][46][j],           0, X[i][47][j],           0],
+                [          0,           0, X[i][48][j],           0, X[i][49][j],           0, X[i][50][j],           0, X[i][51][j],           0, X[i][52][j],           0, X[i][53][j],           0,           0],
+                [          0,           0,           0, X[i][54][j],           0, X[i][55][j],           0, X[i][56][j],           0, X[i][57][j],           0, X[i][58][j],           0,           0,           0],
+                [          0,           0,           0,           0,           0,           0, X[i][59][j],           0, X[i][60][j],           0,           0,           0,           0,           0,           0]
+                ]
+
+    return temp_band
