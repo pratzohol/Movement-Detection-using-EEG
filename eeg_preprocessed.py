@@ -1,11 +1,4 @@
-#!/usr/bin/env python
-#-*- coding: utf-8 -*-
-#@file: pre_process.py
-#@author: Yilong Yang
-#@time: 2017/12/21 15:58
-########################################################
 import scipy.io as sio
-import argparse
 import os
 import sys
 import numpy as np
@@ -15,8 +8,8 @@ import pickle
 
 np.random.seed(0)
 
-def data_1Dto2D(data, Y=9, X=9):
-    data_2D = np.zeros([Y, X])
+def data_1Dto2D(data):
+    data_2D = np.zeros([9, 9])
     data_2D[0] = (0,  	   	0, 	        0,          data[0],    0,          data[16], 	0,  	    0, 	        0       )
     data_2D[1] = (0,  	   	0,          0,          data[1],    0,          data[17],   0,          0,          0       )
     data_2D[2] = (data[3],  0,          data[2],    0,          data[18],   0,          data[19],   0,          data[20])
@@ -26,7 +19,6 @@ def data_1Dto2D(data, Y=9, X=9):
     data_2D[6] = (data[11], 0,          data[10],   0,          data[15],   0,          data[28],   0,          data[29])
     data_2D[7] = (0,        0,          0,          data[12],   0,          data[30],   0,          0,          0       )
     data_2D[8] = (0,        0,          0,          data[13],   data[14],   data[31],   0,          0,          0       )
-    # return shape:9*9
     return data_2D
 
 def norm_dataset(dataset_1D):
@@ -154,13 +146,11 @@ if __name__ == '__main__' :
         output_label= output_dir+record+"_win_"+str(window_size)+"_labels.pkl"
 
         with open(output_data_cnn, "wb") as fp:
-            pickle.dump( shuffled_cnn_data,fp, protocol=4)
+            pickle.dump(shuffled_cnn_data,fp, protocol=4)
         with open( output_data_rnn, "wb") as fp:
             pickle.dump(shuffled_rnn_data, fp, protocol=4)
         with open(output_label, "wb") as fp:
             pickle.dump(shuffled_label, fp)
         end = time.time()
         print("end time:",time.localtime())
-        print("time consuming:",(end-begin))
-        
-        # break
+        print("time consuming:", (end-begin))
