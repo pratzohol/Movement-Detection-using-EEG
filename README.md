@@ -17,8 +17,7 @@ Dataset description :
 ```
 
 <img src="./img/label.png"/>
-<center>Fig 1 : Six movement classes shown</center>
-
+<p align="center">Fig 1 : Six movement classes shown</p>
 
 <div align="right">&#8673; <a href="#back-to-top">Back to Top</a></div>
 
