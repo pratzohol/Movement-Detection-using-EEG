@@ -15,14 +15,13 @@
 Dataset description :
 
 ```
-<center>
-    <figure>
-        <img src="./img/label.png">
-        <figcaption>Fig 1 : Six movement classes shown</figcaption>
-    </figure>
-</center>
-<div align="right">&#8673; <a href="#back-to-top">Back to Top</a></div>
 
+<figure>
+    <img src="./img/label.png">
+    <figcaption align="center">Fig 1 : Six movement classes shown</figcaption>
+</figure>
+
+<div align="right">&#8673; <a href="#back-to-top">Back to Top</a></div>
 
 
 # References
